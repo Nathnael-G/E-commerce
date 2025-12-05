@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Search, ShoppingCart, Menu, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,6 +16,7 @@ const Header = () => {
   };
 
   const handleSignIn = () => {
+    navigate('/login');
     setIsAuthenticated(true);
     console.log('User signed in');
   };
