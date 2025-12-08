@@ -5,9 +5,19 @@ import {
   CardFooter,
 } from '../components/ui/card';
 import { ShoppingBag, Filter, ShoppingCart, Tag } from 'lucide-react';
-
+import { useState, useEffect, useCallback } from 'react';
+import { SkeletonCard } from '@/components/ui/skeletoncard'; 
 interface RecentItemsProps {
   selectedCategory?: string | null;
+}
+
+interface Item {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  discount?: number;
+  image?: string;
 }
 
 const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
@@ -28,7 +38,6 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
       category: 'Baby Products',
       image: '/photo_2025-12-07_10-43-52-removebg-preview.png' 
     },
-    
     { id: 3, name: 'France Lait', price: 2499, category: 'Shirts', image: `doc_2025-12-08_13-04-47-removebg-preview.png` },
     { id: 4, name: 'Kraft', price: 5499, category: 'Accessories', discount: 21, image: `marketing_view_color_front_content_hub_11786936_eced189ec5c0218.png` },
     { id: 5, name: 'Bragg Apple Cider Viniger', price: 5999, category: 'Suits',image: `ACV_Liquid_16oz_Transparent_Front_a6de13bb_4cfc_471c_be7d_060e5b9948a3.png` },
@@ -43,19 +52,97 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
     { id: 14, name: 'Formal Suit', price: 6999, category: 'Formal Wear', discount: 18 },
     { id: 15, name: 'Casual T-shirt', price: 1499, category: 'Casual Wear', discount: 21 },
     { id: 16, name: 'Winter Scarf', price: 1999, category: 'Winter Collection', discount: 20 },
+    { id: 17, name: 'Sports Shoes', price: 4499, category: 'Footwear', discount: 15 },
+    { id: 18, name: 'Running Shorts', price: 1999, category: 'Sportswear', discount: 10 },
+    { id: 19, name: 'Yoga Mat', price: 2999, category: 'Fitness', discount: 20 },
+    { id: 20, name: 'Water Bottle', price: 999, category: 'Accessories' },
+    { id: 21, name: 'Backpack', price: 3999, category: 'Accessories', discount: 12 },
+    { id: 22, name: 'Smart Watch', price: 12999, category: 'Electronics', discount: 25 },
+    { id: 23, name: 'Wireless Earbuds', price: 5999, category: 'Electronics', discount: 18 },
+    { id: 24, name: 'Laptop Sleeve', price: 1499, category: 'Accessories' },
   ];
 
-  const handleBuyNow = (itemId: number, itemName: string) => {
-    console.log(`Buy Now clicked for item ${itemId}: ${itemName}`);
-  };
+  // State management
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const itemsPerPage = 8;
 
   // Filter items by selected category
   const filteredItems = selectedCategory
     ? mockItems.filter(item => item.category === selectedCategory)
     : mockItems;
 
+  // Load items function
+  const loadItems = useCallback(() => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    
+    // Simulate API delay
+    setTimeout(() => {
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      
+      // Get items for current page
+      const newItems = filteredItems.slice(startIndex, endIndex);
+      
+      // Update state
+      setItems(prev => page === 1 ? newItems : [...prev, ...newItems]);
+      setHasMore(endIndex < filteredItems.length);
+      setLoading(false);
+      setIsInitialLoad(false);
+      
+      if (page === 1) {
+        setPage(2);
+      } else {
+        setPage(prev => prev + 1);
+      }
+    }, 1000); // 1 second delay to simulate network
+  }, [page, loading, hasMore, filteredItems]);
+
+  // Reset and load items when category changes
+  useEffect(() => {
+    setItems([]);
+    setPage(1);
+    setHasMore(true);
+    setIsInitialLoad(true);
+    loadItems();
+  }, [selectedCategory]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasMore && !loading) {
+          loadItems();
+        }
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
+
+    // Observe the sentinel element
+    const sentinel = document.getElementById('scroll-sentinel');
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => {
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+    };
+  }, [hasMore, loading, loadItems]);
+
+  const handleBuyNow = (itemId: number, itemName: string) => {
+    console.log(`Buy Now clicked for item ${itemId}: ${itemName}`);
+  };
+
   // If no items found for the selected category
-  if (filteredItems.length === 0 && selectedCategory) {
+  if (items.length === 0 && !isInitialLoad && selectedCategory) {
     return (
       <div className="py-8">
         <div className="mb-10 text-center">
@@ -88,12 +175,6 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
         <h2 className="text-3xl font-bold text-brown-900 mb-3">
           {selectedCategory ? `${selectedCategory} Items` : 'Recent Items'}
         </h2>
-        <p className="text-brown-600">
-          {selectedCategory 
-            ? `Showing ${filteredItems.length} items in ${selectedCategory}`
-            : 'Discover our latest tailored creations'
-          }
-        </p>
         
         {/* Filter indicator */}
         {selectedCategory && (
@@ -105,9 +186,9 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
         )}
       </div>
 
-      {/* Items Grid with staggered animation */}
+      {/* Items Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredItems.map((item, index) => (
+        {items.map((item, index) => (
           <Card 
             key={item.id} 
             className="group relative overflow-hidden border-0 bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up"
@@ -207,8 +288,36 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
             </CardFooter>
           </Card>
         ))}
+        
+        {/* Skeleton Loading Cards */}
+        {loading && Array.from({ length: 4 }).map((_, index) => (
+          <SkeletonCard key={`skeleton-${index}`} />
+        ))}
       </div>
 
+      {/* Scroll Sentinel for infinite scroll */}
+      <div 
+        id="scroll-sentinel"
+        className="h-10 flex items-center justify-center mt-8"
+      >
+        {loading && (
+          <div className="flex items-center justify-center space-x-2">
+            <div className="h-2 w-2 bg-yellow-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="h-2 w-2 bg-yellow-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="h-2 w-2 bg-yellow-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        )}
+        
+        {!hasMore && items.length > 0 && (
+          <div className="text-center py-8">
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-brown-50">
+              <span className="text-brown-600 text-sm font-medium">
+                🎉 You've reached the end! Showing all {items.length} items
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
