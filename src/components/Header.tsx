@@ -34,9 +34,9 @@ const Header = () => {
           <div className="flex items-center">
             <div className="flex flex-col leading-tight">
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-brown-900 tracking-tight">Seya</span>
+                <span className="text-2xl font-bold text-yellow-600 tracking-tight">Loga</span>
               </div>
-              <span className="text-lg font-semibold text-brown-800 tracking-wider">Tailoring</span>
+              
               
             </div>
           </div>

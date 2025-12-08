@@ -5,9 +5,13 @@ import {
   CardContent,
   CardFooter,
 } from '../components/ui/card';
-import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Filter } from 'lucide-react';
 
-const RecentItems = () => {
+interface RecentItemsProps {
+  selectedCategory?: string | null;
+}
+
+const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
   // Mock items data
   const mockItems = [
     { id: 1, name: 'Premium Business Suit', price: 8999, category: 'Suits' },
@@ -22,27 +26,75 @@ const RecentItems = () => {
     { id: 10, name: 'Winter Coat', price: 8999, category: 'Outerwear' },
     { id: 11, name: 'Casual Jacket', price: 4499, category: 'Outerwear' },
     { id: 12, name: 'Evening Purse', price: 2799, category: 'Accessories' },
+    { id: 13, name: 'Traditional Gown', price: 9999, category: 'Traditional' },
+    { id: 14, name: 'Formal Suit', price: 6999, category: 'Formal Wear' },
+    { id: 15, name: 'Casual T-shirt', price: 1499, category: 'Casual Wear' },
+    { id: 16, name: 'Winter Scarf', price: 1999, category: 'Winter Collection' },
   ];
 
   const handleBuyNow = (itemId: number, itemName: string) => {
     console.log(`Buy Now clicked for item ${itemId}: ${itemName}`);
   };
 
+  // Filter items by selected category
+  const filteredItems = selectedCategory
+    ? mockItems.filter(item => item.category === selectedCategory)
+    : mockItems;
+
+  // If no items found for the selected category
+  if (filteredItems.length === 0 && selectedCategory) {
+    return (
+      <div className="py-8">
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl font-bold text-brown-900 mb-3">Recent Items</h2>
+          <p className="text-brown-600">Discover our latest shopping Items</p>
+        </div>
+        
+        <div className="text-center py-12 bg-brown-50 rounded-xl">
+          <Filter className="h-12 w-12 text-brown-400 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-brown-800 mb-2">No items found</h3>
+          <p className="text-brown-600 mb-6">
+            No items found in category "<span className="font-semibold text-yellow-600">{selectedCategory}</span>"
+          </p>
+          <Button
+            variant="outline"
+            className="border-brown-300 text-brown-700 hover:bg-brown-50 hover:text-brown-900 rounded-full px-6"
+            onClick={() => window.location.reload()}
+          >
+            View All Products
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-8">
-      {/* Section Header with animation */}
+      {/* Section Header with filter info */}
       <div className="mb-10 text-center">
-        <h2 className="text-3xl font-bold text-brown-900 mb-3 animate-fade-in">
-          Recent Items
+        <h2 className="text-3xl font-bold text-brown-900 mb-3">
+          {selectedCategory ? `${selectedCategory} Items` : 'Recent Items'}
         </h2>
-        <p className="text-brown-600 animate-fade-in-up delay-100">
-          Discover our latest tailored creations
+        <p className="text-brown-600">
+          {selectedCategory 
+            ? `Showing ${filteredItems.length} items in ${selectedCategory}`
+            : 'Discover our latest tailored creations'
+          }
         </p>
+        
+        {/* Filter indicator */}
+        {selectedCategory && (
+          <div className="mt-4 inline-flex items-center bg-yellow-50 px-4 py-2 rounded-full">
+            <span className="text-sm text-brown-700">
+              Filtered by: <span className="font-semibold text-yellow-600">{selectedCategory}</span>
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Items Grid with staggered animation */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {mockItems.map((item, index) => (
+        {filteredItems.map((item, index) => (
           <Card 
             key={item.id} 
             className="group relative overflow-hidden border-0 bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up"
@@ -90,9 +142,6 @@ const RecentItems = () => {
                   <div className="text-xl font-bold text-brown-900 transition-all duration-300 group-hover:scale-105 group-hover:text-yellow-700">
                     {item.price.toLocaleString()} ETB
                   </div>
-                  <div className="text-xs text-brown-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    Free shipping
-                  </div>
                 </div>
                 
                 {/* Buy Now Button with animated arrow */}
@@ -119,19 +168,30 @@ const RecentItems = () => {
         ))}
       </div>
 
-      {/* View All Button with animation */}
-      <div className="text-center mt-12 animate-fade-in-up delay-1000">
-        <Button
-          variant="outline"
-          className="group border-brown-300 text-brown-700 hover:bg-brown-50 hover:text-brown-900 hover:border-brown-400 rounded-full px-8 py-5 text-sm relative overflow-hidden"
-        >
-          {/* Background animation */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          
-          <ShoppingBag className="mr-2 h-5 w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-          <span className="relative z-10">View All Products</span>
-          <ArrowRight className="ml-2 h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-        </Button>
+      {/* Items count and View All Button */}
+      <div className="flex justify-between items-center mt-12">
+        <div className="text-brown-600 text-sm">
+          Showing {filteredItems.length} of {mockItems.length} products
+          {selectedCategory && (
+            <span className="ml-2">
+              in <span className="font-semibold text-yellow-600">{selectedCategory}</span>
+            </span>
+          )}
+        </div>
+        
+        <div className="animate-fade-in-up delay-1000">
+          <Button
+            variant="outline"
+            className="group border-brown-300 text-brown-700 hover:bg-brown-50 hover:text-brown-900 hover:border-brown-400 rounded-full px-8 py-5 text-sm relative overflow-hidden"
+          >
+            {/* Background animation */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            
+            <ShoppingBag className="mr-2 h-5 w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+            <span className="relative z-10">View All Products</span>
+            <ArrowRight className="ml-2 h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
+        </div>
       </div>
     </div>
   );
