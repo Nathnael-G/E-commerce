@@ -1,11 +1,10 @@
-import React from 'react';
 import { Button } from '../components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
 } from '../components/ui/card';
-import { ShoppingBag, ArrowRight, Filter } from 'lucide-react';
+import { ShoppingBag, Filter, ShoppingCart, Tag } from 'lucide-react';
 
 interface RecentItemsProps {
   selectedCategory?: string | null;
@@ -14,22 +13,35 @@ interface RecentItemsProps {
 const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
   // Mock items data
   const mockItems = [
-    { id: 1, name: 'Premium Business Suit', price: 8999, category: 'Suits' },
-    { id: 2, name: 'Evening Gown', price: 7499, category: 'Dresses' },
-    { id: 3, name: 'Casual Linen Shirt', price: 2499, category: 'Shirts' },
-    { id: 4, name: 'Leather Dress Shoes', price: 5499, category: 'Accessories' },
-    { id: 5, name: 'Tailored Blazer', price: 5999, category: 'Suits' },
-    { id: 6, name: 'Silk Scarf', price: 1299, category: 'Accessories' },
-    { id: 7, name: 'Summer Dress', price: 3999, category: 'Dresses' },
-    { id: 8, name: 'Formal Trousers', price: 3299, category: 'Pants' },
-    { id: 9, name: 'Designer Handbag', price: 11999, category: 'Accessories' },
-    { id: 10, name: 'Winter Coat', price: 8999, category: 'Outerwear' },
-    { id: 11, name: 'Casual Jacket', price: 4499, category: 'Outerwear' },
+    { 
+      id: 1, 
+      name: 'Hershey\'s Chocolate Syrup', 
+      price: 299, 
+      category: 'Food & Beverages', 
+      discount: 15,
+      image: '/doc_2025-12-08_12-50-01.webp'
+    },
+    { 
+      id: 2, 
+      name: 'Aptamil Baby Formula', 
+      price: 7499, 
+      category: 'Baby Products',
+      image: '/photo_2025-12-07_10-43-52.jpg' 
+    },
+    { id: 3, name: 'Casual Linen Shirt', price: 2499, category: 'Shirts', image: `doc_2025-12-08_13-04-47.webp` },
+    { id: 4, name: 'Leather Dress Shoes', price: 5499, category: 'Accessories', discount: 21, image: `marketing_view_color_front_content_hub_11786936_eced189ec5c0218.png` },
+    { id: 5, name: 'Tailored Blazer', price: 5999, category: 'Suits',image: `ACV_Liquid_16oz_Transparent_Front_a6de13bb_4cfc_471c_be7d_060e5b9948a3.png` },
+    { id: 6, name: 'Silk Scarf', price: 1299, category: 'Accessories', discount: 19, image: `71slAAUyxDL._SL1500_.jpg` },
+    { id: 7, name: 'Summer Dress', price: 3999, category: 'Dresses', discount: 20, image: `5-1-600x800.jpg` },
+    { id: 8, name: 'Formal Trousers', price: 3299, category: 'Pants', discount: 18, image: `14-600x600.jpg` },
+    { id: 9, name: 'Designer Handbag', price: 11999, category: 'Accessories', image: `BD4rYo15QcJxpng-optimized.jpg` },
+    { id: 10, name: 'Winter Coat', price: 8999, category: 'Outerwear', discount: 18 },
+    { id: 11, name: 'Casual Jacket', price: 4499, category: 'Outerwear', discount: 18 },
     { id: 12, name: 'Evening Purse', price: 2799, category: 'Accessories' },
-    { id: 13, name: 'Traditional Gown', price: 9999, category: 'Traditional' },
-    { id: 14, name: 'Formal Suit', price: 6999, category: 'Formal Wear' },
-    { id: 15, name: 'Casual T-shirt', price: 1499, category: 'Casual Wear' },
-    { id: 16, name: 'Winter Scarf', price: 1999, category: 'Winter Collection' },
+    { id: 13, name: 'Traditional Gown', price: 9999, category: 'Traditional', discount: 17 },
+    { id: 14, name: 'Formal Suit', price: 6999, category: 'Formal Wear', discount: 18 },
+    { id: 15, name: 'Casual T-shirt', price: 1499, category: 'Casual Wear', discount: 21 },
+    { id: 16, name: 'Winter Scarf', price: 1999, category: 'Winter Collection', discount: 20 },
   ];
 
   const handleBuyNow = (itemId: number, itemName: string) => {
@@ -107,9 +119,53 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-brown-600 rounded-xl opacity-0 group-hover:opacity-20 blur-md transition-all duration-500 group-hover:duration-300 -z-20"></div>
             
             {/* Image Placeholder with shine effect */}
-            <div className="h-40 bg-gradient-to-br from-brown-50 via-yellow-50 to-brown-100 relative overflow-hidden">
+            <div className="h-60 relative overflow-hidden">
               {/* Shine animation overlay */}
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent z-10"></div>
+              
+              {/* Actual product image or gradient background */}
+              {item.image ? (
+                // Items with actual images
+                <div className="absolute inset-0 bg-brown-50">
+                  <img 
+                    src={item.image} 
+                    alt={item.name}
+                    className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brown-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+              ) : (
+                // Original gradient background for items without images
+                <div className="h-full bg-gradient-to-br from-brown-50 via-yellow-50 to-brown-100">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-20 w-20 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/60 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                      <ShoppingBag className="h-10 w-10 text-brown-700/80 group-hover:text-yellow-600 transition-all duration-500 group-hover:scale-110" />
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Discount Badge - Only visible on hover and only if item has discount */}
+              {item.discount && (
+                <div className="absolute top-3 right-3 z-20">
+                  <div className="transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                    <div className="relative">
+                      {/* Animated pulse effect */}
+                      <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-30"></div>
+                      
+                      {/* Main badge */}
+                      <div className="relative bg-gradient-to-br from-red-500 to-red-600 text-white px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+                        <Tag className="h-3.5 w-3.5" />
+                        <span className="text-xs font-bold">{item.discount}% OFF</span>
+                      </div>
+                      
+                      {/* Ribbon tail effect */}
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-red-600"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Category Badge with hover effect */}
               <div className="absolute top-3 left-3 z-10">
@@ -117,19 +173,12 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
                   {item.category}
                 </span>
               </div>
-              
-              {/* Placeholder Icon with bounce */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-20 w-20 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/60 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                  <ShoppingBag className="h-10 w-10 text-brown-700/80 group-hover:text-yellow-600 transition-all duration-500 group-hover:scale-110" />
-                </div>
-              </div>
             </div>
 
             {/* Card Content */}
-            <CardContent className="p-5 relative z-10">
+            <CardContent className="relative z-10">
               {/* Item Name with gradient text on hover */}
-              <h3 className="font-bold text-brown-900 text-base mb-4 line-clamp-2 min-h-[3rem] transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-brown-800 group-hover:to-yellow-600">
+              <h3 className="font-bold text-brown-900 text-base line-clamp-2 min-h-[3rem] transition-all duration-300 group-hover:text-white">
                 {item.name}
               </h3>
             </CardContent>
@@ -137,62 +186,28 @@ const RecentItems = ({ selectedCategory }: RecentItemsProps) => {
             {/* Card Footer */}
             <CardFooter className="p-5 pt-0 relative z-10">
               <div className="w-full space-y-3">
-                {/* Price with pulse animation on hover */}
-                <div className="text-center">
-                  <div className="text-xl font-bold text-brown-900 transition-all duration-300 group-hover:scale-105 group-hover:text-yellow-700">
-                    {item.price.toLocaleString()} ETB
-                  </div>
-                </div>
-                
                 {/* Buy Now Button with animated arrow */}
+                <div className='flex items-center justify-between'>
                 <Button
                   onClick={() => handleBuyNow(item.id, item.name)}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-brown-900 rounded-lg text-sm font-semibold py-2.5 transition-all duration-300 group-hover:shadow-lg hover:scale-[1.02] relative overflow-hidden"
+                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-brown-900 rounded-lg text-sm font-semibold py-2.5 transition-all duration-300 group-hover:shadow-lg hover:scale-[1.02] relative overflow-hidden"
                 >
                   {/* Button shine effect */}
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
                   
-                  <span className="relative z-10">Buy Now</span>
-                  <ArrowRight className="ml-2 h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+                  <span className="relative z-10">Add to cart</span>
+                  <ShoppingCart className="ml-2 h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
                 </Button>
+                <div className="text-xl font-bold text-brown-900 transition-all duration-300 group-hover:scale-105 group-hover:text-yellow-700">
+                    {item.price.toLocaleString()} ETB
+                  </div>
+                </div>
               </div>
             </CardFooter>
-
-            {/* Quick View Hint (appears on hover) */}
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-x-4 group-hover:translate-x-0">
-              <div className="bg-white/90 backdrop-blur-sm text-brown-700 text-xs px-2 py-1 rounded-full">
-                Quick View
-              </div>
-            </div>
           </Card>
         ))}
       </div>
 
-      {/* Items count and View All Button */}
-      <div className="flex justify-between items-center mt-12">
-        <div className="text-brown-600 text-sm">
-          Showing {filteredItems.length} of {mockItems.length} products
-          {selectedCategory && (
-            <span className="ml-2">
-              in <span className="font-semibold text-yellow-600">{selectedCategory}</span>
-            </span>
-          )}
-        </div>
-        
-        <div className="animate-fade-in-up delay-1000">
-          <Button
-            variant="outline"
-            className="group border-brown-300 text-brown-700 hover:bg-brown-50 hover:text-brown-900 hover:border-brown-400 rounded-full px-8 py-5 text-sm relative overflow-hidden"
-          >
-            {/* Background animation */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            
-            <ShoppingBag className="mr-2 h-5 w-5 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-            <span className="relative z-10">View All Products</span>
-            <ArrowRight className="ml-2 h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };

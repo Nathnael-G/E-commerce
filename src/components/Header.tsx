@@ -61,7 +61,7 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             {/* Cart Icon */}
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               className="relative text-brown-700 hover:text-brown-900 hover:bg-brown-50 rounded-full h-10 w-10 transition-colors"
             >
