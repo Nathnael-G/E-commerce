@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Search, ShoppingCart, Menu, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,12 +11,6 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
-  };
-
-  const handleSignIn = () => {
-    navigate('/login');
-    setIsAuthenticated(true);
-    console.log('User signed in');
   };
 
   const handleSignOut = () => {
@@ -63,7 +55,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="icon"
-              className="relative text-brown-700 hover:text-brown-900 hover:bg-brown-50 rounded-full h-10 w-10 transition-colors"
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-brown-900 hover:from-yellow-600 hover:to-yellow-700 rounded-full shadow-sm hover:shadow transition-all duration-200"
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
@@ -80,20 +72,8 @@ const Header = () => {
                 </Button>
               ) : (
                 <>
-                  <Button
-                    variant="outline"
-                    className="border-brown-300 text-brown-700 hover:bg-brown-50 hover:text-brown-900 hover:border-brown-400 rounded-full px-5"
-                    onClick={handleSignIn}
-                  >
-                    <span className="font-medium">Sign In</span>
-                  </Button>
-                  <Button
-                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-brown-900 hover:from-yellow-600 hover:to-yellow-700 rounded-full px-5 shadow-sm hover:shadow transition-all duration-200"
-                    onClick={handleSignIn}
-                  >
-                    <span className="font-medium">Sign Up</span>
-                  </Button>
-                </>
+<h2 className="text-xl font-bold text-brown-900">Dashboard</h2>
+</>
               )}
             </div>
 

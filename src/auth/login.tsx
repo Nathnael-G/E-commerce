@@ -1,11 +1,9 @@
 import { LoginForm } from "@/components/login-form"
 
-export default function LoginPage() {
+export default function LoginPage({ setIsLoggedIn }: { setIsLoggedIn: (v: boolean) => void }) {
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
+        <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-4xl">
-        <LoginForm />
-      </div>
-    </div>
-  )
+    <LoginForm setIsLoggedIn={setIsLoggedIn} /></div></div>
+  );
 }

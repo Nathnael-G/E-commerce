@@ -9,16 +9,29 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useNavigate } from "react-router-dom"
+
+type LoginFormProps = React.ComponentProps<"div"> & {
+  setIsLoggedIn: (value: boolean) => void;
+};
 
 export function LoginForm({
+  setIsLoggedIn,
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginFormProps) {
+  const navigate = useNavigate()
+
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoggedIn(true)
+    navigate("/")
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleLogin}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold text-brown-900">
