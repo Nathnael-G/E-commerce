@@ -3,20 +3,47 @@ import { Search, ShoppingCart, Menu, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
-const Header = () => {
+interface HeaderProps {
+  onSearch?: (query: string) => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+}
+
+const Header = ({ onSearch, searchQuery: propSearchQuery, onSearchChange }: HeaderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [internalSearchQuery, setInternalSearchQuery] = useState('');
 
+  // Use prop if provided, otherwise use internal state
+  const searchQuery = propSearchQuery !== undefined ? propSearchQuery : internalSearchQuery;
+  
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Searching for:', searchQuery);
+    if (onSearch) {
+      onSearch(searchQuery);
+    } else {
+      console.log('Searching for:', searchQuery);
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    if (onSearchChange) {
+      onSearchChange(value);
+    } else {
+      setInternalSearchQuery(value);
+    }
+    
+    // Optional: If you want to search as you type, uncomment this:
+    // if (onSearch) {
+    //   onSearch(value);
+    // }
   };
 
   const handleSignOut = () => {
     setIsAuthenticated(false);
     console.log('User signed out');
   };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-brown-200 bg-white/90 backdrop-blur-md">
@@ -28,8 +55,6 @@ const Header = () => {
               <div className="flex items-center">
                 <span className="text-2xl font-bold text-yellow-600 tracking-tight">Loga</span>
               </div>
-              
-              
             </div>
           </div>
 
@@ -41,9 +66,9 @@ const Header = () => {
                 <Input
                   type="search"
                   placeholder="Search suits, dresses, accessories..."
-                  className="w-full pl-12 pr-4 py-6 rounded-full border-brown-200 bg-brown-50/50 focus:bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200"
+                  className="w-full pl-12 pr-12 py-6 rounded-full border-brown-200 bg-brown-50/50 focus:bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                 />
               </div>
             </form>
@@ -55,7 +80,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="icon"
-                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-brown-900 hover:from-yellow-600 hover:to-yellow-700 rounded-full shadow-sm hover:shadow transition-all duration-200"
+              className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-brown-900 hover:from-yellow-600 hover:to-yellow-700 rounded-full shadow-sm hover:shadow transition-all duration-200"
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
@@ -71,9 +96,7 @@ const Header = () => {
                   <span className="font-medium">Sign Out</span>
                 </Button>
               ) : (
-                <>
-<h2 className="text-xl font-bold text-brown-900">Dashboard</h2>
-</>
+                <h2 className="text-xl font-bold text-brown-900">Dashboard</h2>
               )}
             </div>
 
@@ -97,9 +120,9 @@ const Header = () => {
               <Input
                 type="search"
                 placeholder="Search items..."
-                className="w-full pl-12 pr-4 py-4 rounded-full border-brown-200 bg-brown-50/50"
+                className="w-full pl-12 pr-12 py-4 rounded-full border-brown-200 bg-brown-50/50"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
               />
             </form>
           </div>
